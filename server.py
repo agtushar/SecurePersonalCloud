@@ -8,7 +8,7 @@ print ("Socket successfully created")
   
 # reserve a port on your computer in our 
 # case it is 12345 but it can be anything 
-port = 1272     
+port = 1273     
   
 # Next bind to the port 
 # we have not typed any ip in the ip field 
@@ -80,6 +80,7 @@ while True:
    			if m=='Y' :
    				flag=2
    				cur.execute("DELETE FROM Files WHERE filename = ?", (nm,))
+   				conn.commit()
    			if m=='N' :
    				flag=0
    				c.send(b'No changes')
@@ -103,7 +104,7 @@ while True:
    #s.connect((addr[0], addr[1]))
    # Close the connection with the client 
    	c.close() 
-   print(st[0:8])
+   print(st)
    if st[0:8] == 'Download':
    	flag=0
    	nm=st[8:]
@@ -132,6 +133,196 @@ while True:
    	if flag==0:
    		c.sendall(b'File not found')
 
+   if st[0:4]=='sync' :
+   	c.send(b'Start of sync')
+   	print('Start of Sync')
+   	d=c.recv(1024).decode('utf-8')
+   	c.sendall(b'OK')
+   	length=int(c.recv(1024).decode('utf-8'))
+   	print(length)
+   	c.send(b'OK')
+   	a=[]
+   	for i in range(0,length):
+	   	nm=c.recv(1024).decode('utf-8')
+   		print(nm)
+   		a.append(nm)
+	   	flag=1
+	   	print('Prepare for read')
+	   	c.send(b'Prepare for read')
+	   	info=b''
+	   	data=b''
+	   	ch=b''
+	   	while True:
+	   		print('receiving data...')
+	   		try:
+	   			cc=ch.decode('utf-8')
+	   			print(cc)
+	   			if cc=='over' :
+	   				break
+	   		except UnicodeDecodeError:
+	   			pass
+	   		data=c.recv(1024)
+	   		ch=data[-4:] 
+	   		print(ch)
+	   		info=info+data
+	   	info=info[:-4]
+	   	print('Finished reading')
+	   	cur.execute('SELECT id, filename, document FROM Files')
+	   	name=cur.fetchall()
+	   	print('Finished database fetching')
+	   	for row in name:
+	   		if row[1]==nm :
+	   			if info==row[2]:
+	   				c.send(b'File already synced')
+   					print('File already synced')
+   					flag=3
+	   			else:
+	   				c.send(b'files differ. Update in server [Y]. Upload in client [N]?')
+   					print('File clash')
+	   				m=(c.recv(1024)).decode('utf-8')
+   					print('Waiting for user')
+	   				if m=='Y' :
+	   					flag=2
+	   					cur.execute("DELETE FROM Files WHERE filename = ?", (nm,))
+   						conn.commit()
+	   				if m=='N' :
+	   					flag=0
+	   					l=(row[2])[0:1024]
+			   			print(l)
+			   			ctr=1024
+			   			print(ctr)
+			   			while l:
+			   				c.send(l)
+			   				l=(row[2])[ctr:ctr+1024]
+			   				print(l)
+			   				ctr=ctr+1024
+			   				print(ctr)
+			   			c.send(b'done')
+			   			flag=0
+   				break
+	   	print('Done deletion or download')
+	   	print(flag)
+	   	if flag==1 or flag==2 :
+	   		print('Database modification required')
+	   		cur.execute('Insert into Files(filename,document) values(?,?)',(nm,info))
+	   		conn.commit()
+	   		if flag==1 :
+	   			c.send(b'File stored')
+	   		if flag==2 :
+	   			c.send(b'File updated in server')
+	   	print('This job is done')
+   		print('count ',i)
+	   	#print('committed')
+   		#cur.close()
+   		#conn.close()
+   	#c.send(b'File stored')	
+   	#c.send(b'Sorry, Username already exists')		
+   # send a thank you message to the client. 
+   #s.connect((addr[0], addr[1]))
+   # Close the connection with the client 
+   	print('back trace')
+   	cur.execute('SELECT filename FROM Files')
+   	name=cur.fetchall()
+   	ld=len(d)
+   	delrec=''
+   	for row in name:
+   		ctr = 0
+   		print((row[0])[0:ld])
+   		if (row[0])[0:ld]==d:
+   			for i in a :
+   				if row[0] == i:
+   					ctr=ctr+1
+   			print(ctr)
+   			if ctr==0 :
+   				cur.execute("DELETE FROM Files WHERE filename = ?", (row[0],))
+   				conn.commit()
+   				delrec=delrec+'Deleted '+row[0]+'\n'
+   	
+   	c.sendall(delrec.encode('utf-8'))
+   	c.close() 
+
+
+   if st[0:9]=='synstatus' :
+   	c.send(b'Start of sync')
+   	print('Start of Syncstatus')
+   	d=c.recv(1024).decode('utf-8')
+   	c.sendall(b'OK')
+   	length=int(c.recv(1024).decode('utf-8'))
+   	print(length)
+   	c.send(b'OK')
+   	synced='The synced files are:\n'
+   	unsynced='The unsynced files are:\n'
+   	servered='The files exclusively on server are:\n'
+   	cliented='The files exclusively on client are:\n'
+   	a=[]
+   	for i in range(0,length):
+	   	nm=c.recv(1024).decode('utf-8')
+   		print(nm)
+   		a.append(nm)
+	   	flag=0
+	   	print('Prepare for read')
+	   	c.send(b'Prepare for read')
+	   	info=b''
+	   	data=b''
+	   	ch=b''
+	   	while True:
+	   		print('receiving data...')
+	   		try:
+	   			cc=ch.decode('utf-8')
+	   			print(cc)
+	   			if cc=='over' :
+	   				break
+	   		except UnicodeDecodeError:
+	   			pass
+	   		data=c.recv(1024)
+	   		ch=data[-4:] 
+	   		print(data)
+	   		info=info+data
+	   	info=info[:-4]
+   		c.send(b'YES')
+	   	print('Finished reading')
+	   	cur.execute('SELECT id, filename, document FROM Files')
+	   	name=cur.fetchall()
+	   	print('Finished database fetching')
+	   	for row in name:
+	   		if row[1]==nm :
+   				flag=1
+	   			if info==row[2]:
+	   				synced=synced+nm+'\n'
+	   			else:
+	   				unsynced=unsynced+nm+'\n'
+   				break
+   		if flag==0:
+   			cliented=cliented+nm+'\n'
+	   	print('Done deletion or download')
+	   	#print('committed')
+   		#cur.close()
+   		#conn.close()
+   	#c.send(b'File stored')	
+   	#c.send(b'Sorry, Username already exists')		
+   # send a thank you message to the client. 
+   #s.connect((addr[0], addr[1]))
+   # Close the connection with the client 
+   	print('back trace')
+   	cur.execute('SELECT filename FROM Files')
+   	name=cur.fetchall()
+   	ld=len(d)
+   	for row in name:
+   		ctr = 0
+   		print((row[0])[0:ld])
+   		if (row[0])[0:ld]==d:
+   			for i in a :
+   				if row[0] == i:
+   					ctr=ctr+1
+   			print(ctr)
+   			if ctr==0 :
+   				servered=servered+row[0]+'\n'
+   	
+   	c.sendall(synced.encode('utf-8'))
+   	c.sendall(unsynced.encode('utf-8'))
+   	c.sendall(servered.encode('utf-8'))
+   	c.sendall(cliented.encode('utf-8'))
+   	c.close()    
 
    if data[0]=='signup':
    	cur.execute('SELECT * FROM Credential')
