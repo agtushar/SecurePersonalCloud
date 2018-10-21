@@ -17,7 +17,7 @@ for item in jsond.keys():
     if item not in files:
         var = input('File exists in server. Want to download?')
         if var == 'N':
-            os.system('python delete_client.py '+sys.argv[1]+' '+sys.argv[2]+' '+item)
+            res = rq.post('http://127.0.0.1:8000/storage/deletefile/', data={'name':sys.argv[1],'password':sys.argv[2],'filename':item})
         else:
             os.system('python download_client1.py '+sys.argv[1]+' '+sys.argv[2]+' '+item)
     else:
