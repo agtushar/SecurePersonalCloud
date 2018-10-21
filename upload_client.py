@@ -3,7 +3,6 @@ import sys
 import hashlib
 import json
 
-print(sys.argv[1])
 username = sys.argv[1]
 password = sys.argv[2]
 with open(sys.argv[3],'rb') as rf:

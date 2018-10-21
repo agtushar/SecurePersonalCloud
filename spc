@@ -15,13 +15,21 @@ if [ "$1" = "config" ]; then
         fi
     fi
 elif [ "$1" = "sync" ]; then
-    #read -p "1 for upload 2 for download" var
-    #if [ "$var" = "1" ]; then
-    #    python upload 
-    #elif [ "$var" = "2" ]; then
-        python sync 
-	#source ~/Desktop/170100082-outlab2/Task2/C/superdupe.sh
-    
+        ctr=0
+        while read -r line
+        do
+            if [[ $ctr -eq 0 ]]; then
+                name="$line"
+            else
+                pass="$line"
+            fi
+            ctr=$ctr+1
+        done <"./config"
+ 	while read -r line
+        do
+            obs=$line
+        done <"./direct_name"  
+  	python3 sync.py $name $pass $obs
 
 elif [ "$1" = "server" ]; then
     if [ "$2" = "set-url" ]; then
