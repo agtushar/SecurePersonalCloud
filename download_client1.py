@@ -8,7 +8,7 @@ username = sys.argv[1]
 password = sys.argv[2]
 res = rq.post('http://127.0.0.1:8000/storage/download1/', data={'name':username, 'password':password, 'filename':sys.argv[3]})
 rldata = json.loads(res.content.decode())
-md5 = hashlib.md5(rldata[sys.argv[3]][0]).hexdigest()
+md5 = hashlib.md5(rldata[sys.argv[3]][0].encode('ISO-8859-1')).hexdigest()
 if 'userFail' in rldata.keys():
     sys.exit()
 while md5 != rldata[sys.argv[3]][1]:

@@ -24,7 +24,7 @@ for item in jsond.keys():
         with open(item,'rb') as rf:
             cont = rf.read()
             conte = cont.decode('ISO-8859-1')
-            md5 = hashlib.md5(conte).hexdigest()
+            md5 = hashlib.md5(cont).hexdigest()
             if not md5 == jsond[item]:
                 var = input('Files exist locally and at server. '1' for server copy, '2' for local copy')
                 if var == '1':

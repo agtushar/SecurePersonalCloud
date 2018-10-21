@@ -11,5 +11,4 @@ class MyUser(models.Model):
     password = models.CharField(max_length=200)
     files = models.ManyToManyField(userFile)
     def __str__(self):
-        print(self.username)
         return self.username

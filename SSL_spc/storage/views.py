@@ -11,7 +11,7 @@ import hashlib
 def upload(request):
     user = authenticate(username=request.POST['name'], password=request.POST['password'])
     if user is not None:
-        if hashlib.md5(request.POST['content']).hexdigest() != request.POST['md5']:
+        if hashlib.md5(request.POST['content'].encode('ISO-8859-1')).hexdigest() != request.POST['md5']:
             return HttpResponse(json.dumps({'checksum':'false'}))
         try:
             usrfl = models.userFile.objects.get(filename=user.username+request.POST['filename'])
@@ -56,7 +56,7 @@ def download1(request):
         try:
             temp =  usrt.files.get(filename=uname+request.POST['filename'])
             flname = temp.filename[len(uname):]
-            data[flname] = [temp.content.decode('utf-8'),hashlib.md5(temp.content.decode('utf-8')).hexdigest()]
+            data[flname] = [temp.content.decode('utf-8'),hashlib.md5(temp.content.decode('utf-8').encode('ISO-8859-1')).hexdigest()]
         except models.userFile.DoesNotExist:
             return HttpResponse(json.dumps({'userFail':'true'}))
         resp = HttpResponse(json.dumps(data))
@@ -72,7 +72,7 @@ def md5s(request):
         data = {}
         for temp in usrt.files.all():
             flname = temp.filename[len(uname):]
-            data[flname] = hashlib.md5(temp.content.decode('utf-8')).hexdigest()
+            data[flname] = hashlib.md5(temp.content.decode('utf-8').encode('ISO-8859-1')).hexdigest()
         resp = HttpResponse(json.dumps(data))
         return resp
     else:
