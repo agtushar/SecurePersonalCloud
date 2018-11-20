@@ -25,7 +25,7 @@ elif [[ "$1" = "sync" ]]; then
             fi
             ctr=$ctr+1
         done <"./config"
- 	while read -r line
+    while read -r line
         do
             obs=$line
         done <"./direct_name" 
