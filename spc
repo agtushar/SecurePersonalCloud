@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ "$1" = "config" ]; then
-    if [ "$2" = "edit" ]; then
+if [[ "$1" = "config" ]]; then
+    if [[ "$2" = "edit" ]]; then
         read -p "Username: " user
         read -sp "Password: " pass
         echo ""
@@ -14,9 +14,9 @@ if [ "$1" = "config" ]; then
             echo $pass >> ./config
         fi
     fi
-elif [ "$1" = "sync" ]; then
-        ctr=0
-        while read -r line
+elif [[ "$1" = "sync" ]]; then
+    ctr=0
+    while read -r line
         do
             if [[ $ctr -eq 0 ]]; then
                 name="$line"
@@ -28,8 +28,23 @@ elif [ "$1" = "sync" ]; then
  	while read -r line
         do
             obs=$line
-        done <"./direct_name"  
-  	python3 sync.py $name $pass $obs
+        done <"./direct_name" 
+    ctr=0 
+    while read -r line
+        do
+            echo $line
+            if [[ $ctr -eq 0 ]]; then
+                encr="$line"
+            elif [[ $ctr -eq 1 ]]; then
+                entr1="$line"
+            elif [[ $ctr -eq 2 ]]; then
+                entr2="$line"
+            elif [[ $ctr -eq 3 ]]; then
+                entr3="$line"
+            fi
+            ctr=$ctr+1
+        done <"crypt"
+    python3 sync.py $name $pass $obs $encr $entr1 $entr2 $entr3
 
 elif [ "$1" = "server" ]; then
     if [ "$2" = "set-url" ]; then
