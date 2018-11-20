@@ -25,11 +25,11 @@ elif [ "$1" = "sync" ]; then
             fi
             ctr=$ctr+1
         done <"./config"
- 	while read -r line
+    while read -r line
         do
             obs=$line
-        done <"./direct_name"  
-  	python3 sync.py $name $pass $obs
+        done <"./direct_name"
+    python3 sync.py $name $pass $obs
 
 elif [ "$1" = "server" ]; then
     if [ "$2" = "set-url" ]; then
