@@ -16,10 +16,10 @@ def upload(request):
         if hashlib.md5(request.POST['content'].encode('ISO-8859-1')).hexdigest() != request.POST['md5']:
             return HttpResponse(json.dumps({'checksum':'false'}))
         try:
-            usrfl = models.userFile.objects.get(filename=user.username+request.POST['filename'])
+            usrfl = models.userFile.objects.get(filename=user.username+'/'+request.POST['filename'])
         except models.userFile.DoesNotExist:
             usrfl = models.userFile()
-        usrfl.filename = user.username+request.POST['filename']
+        usrfl.filename = user.username+'/'+request.POST['filename']
         usrfl.content = bytes(request.POST['content'], encoding='utf-8')
         usrfl.save()
         try:
@@ -41,7 +41,7 @@ def download(request):
         usrt = models.MyUser.objects.get(username=uname)
         data = {}
         for temp in usrt.files.all():
-            flname = temp.filename[len(uname):]
+            flname = temp.filename[len(uname)+1:]
             data[flname] = [temp.content.decode('utf-8'),hashlib.md5(temp.content.decode('utf-8')).hexdigest()]
         resp = HttpResponse(json.dumps(data))
         return resp
@@ -56,8 +56,8 @@ def download1(request):
         usrt = models.MyUser.objects.get(username=uname)
         data = {}
         try:
-            temp =  usrt.files.get(filename=uname+request.POST['filename'])
-            flname = temp.filename[len(uname):]
+            temp =  usrt.files.get(filename=uname+'/'+request.POST['filename'])
+            flname = temp.filename[len(uname)+1:]
             data[flname] = [temp.content.decode('utf-8'),hashlib.md5(temp.content.decode('utf-8').encode('ISO-8859-1')).hexdigest()]
         except models.userFile.DoesNotExist:
             return HttpResponse(json.dumps({'userFail':'true'}))
@@ -73,7 +73,7 @@ def md5s(request):
         usrt = models.MyUser.objects.get(username=uname)
         data = {}
         for temp in usrt.files.all():
-            flname = temp.filename[len(uname):]
+            flname = temp.filename[len(uname)+1:]
             data[flname] = hashlib.md5(temp.content.decode('utf-8').encode('ISO-8859-1')).hexdigest()
         resp = HttpResponse(json.dumps(data))
         return resp
@@ -87,7 +87,7 @@ def deletefile(request):
         usrt = models.MyUser.objects.get(username=uname)
         data = {}
         try:
-            temp =  usrt.files.get(filename=uname+request.POST['filename'])
+            temp =  usrt.files.get(filename=uname+'/'+request.POST['filename'])
             temp.delete()
         except models.userFile.DoesNotExist:
             return HttpResponse(json.dumps({'userFail':'true'}))
@@ -103,7 +103,7 @@ def direct_Str(request):
         iflnames = [];flnames = [];
         for temp in usrt.files.all():
             iflnames.append(temp.filename)
-        strt = request.GET.get('directn', uname)
+        strt = request.GET.get('directn', uname+'/')
         print(strt)
         for temp in iflnames:
             if temp.find(strt) == 0:
@@ -112,7 +112,7 @@ def direct_Str(request):
         html = "<p>This is the current list of files</p> <ul> Files"
         vfls = []
         for temp in flnames:
-            tempst = temp[len(strt)+1:]
+            tempst = temp[len(strt):]
             num = tempst.find('/')
             if num == -1:
                 htst = '''<li><a href="http://127.0.0.1:8000/storage/openFile/?filename='''+temp+'''">'''+tempst+"</a></li>"
@@ -121,7 +121,7 @@ def direct_Str(request):
             else:
                 tempst2 = tempst[:num]
                 if tempst2 not in vfls:
-                    htst = '''<li><a href="http://127.0.0.1:8000/storage/direct_Str/?directn='''+urllib.parse.quote(strt+'/'+tempst2, safe='')+'''">'''+tempst2+"</a></li>"
+                    htst = '''<li><a href="http://127.0.0.1:8000/storage/direct_Str/?directn='''+urllib.parse.quote(strt+tempst2+'/', safe='')+'''">'''+tempst2+"</a></li>"
                     tempht = html+htst
                     html = tempht
                     vfls.append(tempst2)

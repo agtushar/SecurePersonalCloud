@@ -17,12 +17,19 @@ jsond = json.loads(res.content.decode())
 #print(jsond)
 comm = 'find '+sys.argv[3]+' -type f'
 files = subprocess.check_output(comm, shell=True).decode().split('\n')
+with open('direct_name', 'r') as rf:
+    strtS = rf.read().strip('\n')
+lis2 = strtS.split('/')
+bstrt = strtS[:-len(lis2[-1])]
 for item in files[:-1]:
-    if item not in jsond.keys():
+    if item[len(bstrt):] not in jsond.keys():
         comm = 'python3 upload_client.py '+sys.argv[1]+' '+sys.argv[2]+' '+item+' '+sys.argv[4]+' '+sys.argv[5]+' '+sys.argv[6]+' '+sys.argv[7]
         print('Uploading new ',item)
         os.system(comm)
+nfiles = []
 for item in jsond.keys():
+    nfiles.append(bstrt+item)
+for item in nfiles:
     if item not in files:
         var = input("File exists in server. Want to download? 'N' for no\n")
         if var == 'N':
@@ -41,36 +48,35 @@ for item in jsond.keys():
                 n=int(sys.argv[5])
                 key_detail=(n,e,d)
                 key=RSA.construct(key_detail)
-                pb=key.publickey() 
+                pb=key.publickey()
                 cont=pb.encrypt(cont,32)
-                cont=cont[0] 
+                cont=cont[0]
 
-            if sys.argv[4]=='2':
+            elif sys.argv[4] =='2':
                 key=sys.argv[5]
                 iv=sys.argv[6]
                 aes=AES.new(key,AES.MODE_CBC,iv)
                 extra=len(conte)%16
                 if extra>0:
                     conte=conte+(' '*(16-extra))
-                conte = conte.encode('ISO-8859-1') 
+                conte = conte.encode('ISO-8859-1')
                 cont=aes.encrypt(conte)
- 
-            if sys.argv[4]=='3':
+
+            elif sys.argv[4] =='3':
                 key=sys.argv[5]
                 key=key.encode('utf-8')
                 d=des(key)
                 extra=len(conte)%8
                 if extra>0:
                     conte=conte+(' '*(8-extra))
-                conte = conte.encode('ISO-8859-1') 
+                conte = conte.encode('ISO-8859-1')
                 cont=d.encrypt(conte)
 
             md5 = hashlib.md5(cont).hexdigest()
-            
             #print(md5)
-            #print(jsond[item]) 
+            #print(jsond[item])
 
-            if not md5 == jsond[item]:
+            if not md5 == jsond[item[len(bstrt):]]:
                 var = input("Files exist locally and at server. '1' for server copy, '2' for local copy "+item+"\n")
                 if var == '1':
                     os.system('python3 download_client1.py '+sys.argv[1]+' '+sys.argv[2]+' '+item+' '+sys.argv[4]+' '+sys.argv[5]+' '+sys.argv[6]+' '+sys.argv[7])

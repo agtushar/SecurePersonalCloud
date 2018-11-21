@@ -29,18 +29,23 @@ elif scheme=='3':
 
 username = sys.argv[1]
 password = sys.argv[2]
-res = rq.post('http://127.0.0.1:8000/storage/download1/', data={'name':username, 'password':password, 'filename':sys.argv[3]})
+with open('direct_name', 'r') as rf:
+    strtS = rf.read().strip('\n')
+lis2 = strtS.split('/')
+relPath = lis2[-1]+sys.argv[3][len(strtS):]
+res = rq.post('http://127.0.0.1:8000/storage/download1/', data={'name':username, 'password':password, 'filename':relPath})
 rldata = json.loads(res.content.decode())
 md5 = hashlib.md5(rldata[sys.argv[3]][0].encode('ISO-8859-1')).hexdigest()
 if 'userFail' in rldata.keys():
     sys.exit()
 while md5 != rldata[sys.argv[3]][1]:
-    res = rq.post('http://127.0.0.1:8000/storage/download1/', data={'name':username, 'password':password, 'filename':sys.argv[3]})
+    res = rq.post('http://127.0.0.1:8000/storage/download1/', data={'name':username, 'password':password, 'filename':relPath})
     rldata = json.loads(res.content.decode())
     md5 = hashlib.md5(rldata[sys.argv[3]][0]).hexdigest()
 
 for key, value in rldata.items():
-    directory = key
+    frstSl = key[key.find('/'):]
+    directory = strtS+key
     directory = os.path.dirname(directory)
     if not os.path.exists(directory):
         os.makedirs(directory)

@@ -59,8 +59,12 @@ sendcon = content.decode('ISO-8859-1')
 #print()
 #print(sendcon)
 md5sum = hashlib.md5(content).hexdigest()
-r = rq.post('http://127.0.0.1:8000/storage/upload/', data={'name':username, 'password':password, 'filename':sys.argv[3], 'content':sendcon, 'md5':md5sum})
+with open('direct_name', 'r') as rf:
+    strtS = rf.read().strip('\n')
+lis2 = strtS.split('/')
+relPath = lis2[-1]+sys.argv[3][len(strtS):]
+r = rq.post('http://127.0.0.1:8000/storage/upload/', data={'name':username, 'password':password, 'filename':relPath, 'content':sendcon, 'md5':md5sum})
 rld = json.loads(r.content.decode())
 while rld['checksum'] == 'false':
-    r = rq.post('http://127.0.0.1:8000/storage/upload/', data={'name':username, 'password':password, 'filename':sys.argv[3], 'content':sendcon, 'md5':md5sum})
+    r = rq.post('http://127.0.0.1:8000/storage/upload/', data={'name':username, 'password':password, 'filename':relPath, 'content':sendcon, 'md5':md5sum})
     rld = json.loads(r.content.decode())
