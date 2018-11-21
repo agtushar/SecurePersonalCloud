@@ -7,17 +7,14 @@ import Crypto
 from Crypto.PublicKey import RSA
 from Crypto import Random
 from Crypto.Cipher import AES
+from Crypto.Cipher import ARC4
 import pyDes
 from pyDes import des 
 
 scheme=sys.argv[4]
 if scheme=='1':
-    e=int(sys.argv[6])
-    d=int(sys.argv[7])
-    n=int(sys.argv[5])
-    key_detail=(n,e,d)
-    key_made=RSA.construct(key_detail)
-    pb=key_made.publickey() 
+    key=sys.argv[5]
+    arc=ARC4.new(key)  
 elif scheme=='2':
     key=sys.argv[5]
     iv=sys.argv[6]
@@ -49,22 +46,25 @@ for key, value in rldata.items():
     directory = os.path.dirname(directory)
     if not os.path.exists(directory):
         os.makedirs(directory)
-    with open(key,'w') as wf:
+    with open(key,'wb') as wf:
         var=rldata[key][0].encode('ISO-8859-1')
-        #print(type(var))
         c=''
         if scheme=='1':
-            tobe=key_made.decrypt(var)
-            c=tobe.decode('ISO-8859-1')
+            decd=arc.decrypt(var)
+            wf.write(decd) 
         elif scheme=='2': 
             decd=aes.decrypt(var)
             #print(decd)
             y=decd.decode('ISO-8859-1')   
-            #print(y)
             c=y.rstrip()
-        elif scheme=='3':
+            wf.write(c.encode('ISO-8859-1'))
+            #print(c.encode('ISO-8859-1'))
+            #print(c)
+            #with open('down.txt','wb') as wf:
+            #    wf.write(content1.encode('ISO-8859-1'))
+        elif scheme=='3': 
             decd=d.decrypt(var)
             y=decd.decode('ISO-8859-1')
             c=y.rstrip()
-        wf.write(c)
+            wf.write(c.encode('ISO-8859-1'))
 

@@ -6,18 +6,15 @@ import Crypto
 from Crypto.PublicKey import RSA
 from Crypto import Random
 from Crypto.Cipher import AES
+from Crypto.Cipher import ARC4
 import pyDes
 from pyDes import des 
 
 scheme=sys.argv[4]
 
 if scheme=='1':
-	e=int(sys.argv[6])
-	d=int(sys.argv[7])
-	n=int(sys.argv[5])
-	key_detail=(n,e,d)
-	key=RSA.construct(key_detail)
-	pb=key.publickey() 
+	key=sys.argv[5]
+	arc=ARC4.new(key)
 elif scheme=='2':
 	#print('here')
 	key=sys.argv[5]
@@ -34,12 +31,13 @@ username = sys.argv[1]
 password = sys.argv[2]
 with open(sys.argv[3],'rb') as rf:
     content1 = rf.read()
+    #print(len(content1))
 #print(scheme)
 if scheme=='1':
-	content=pb.encrypt(content1,32)
-	content=content[0]
+	content=arc.encrypt(content1)
 if scheme=='2':
-	#print('here')
+	#with open('up.txt','wb') as wf:
+	#	wf.write(content1)
 	content1=content1.decode('ISO-8859-1')
 	extra=len(content1)%16
 	if extra>0:
@@ -52,6 +50,7 @@ if scheme=='3':
 	if extra>0:
 		content1=content1+(' '*(8-extra))
 	content1 = content1.encode('ISO-8859-1') 
+	#print("Encrypting")
 	content=d.encrypt(content1)
 
 #print(content)
