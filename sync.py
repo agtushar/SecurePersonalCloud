@@ -17,11 +17,10 @@ jsond = json.loads(res.content.decode())
 #print(jsond)
 comm = 'find '+sys.argv[3]+' -type f'
 files = subprocess.check_output(comm, shell=True).decode().split('\n')
-print(files)
 for item in files[:-1]:
     if item not in jsond.keys():
         comm = 'python3 upload_client.py '+sys.argv[1]+' '+sys.argv[2]+' '+item+' '+sys.argv[4]+' '+sys.argv[5]+' '+sys.argv[6]+' '+sys.argv[7]
-        print('Uploading new ',item)	
+        print('Uploading new ',item)
         os.system(comm)
 for item in jsond.keys():
     if item not in files:

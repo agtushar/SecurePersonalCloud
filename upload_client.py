@@ -29,7 +29,6 @@ elif scheme=='3':
     key=sys.argv[5]
     key=key.encode('utf-8')
     d=des(key) 
-	
 
 username = sys.argv[1]
 password = sys.argv[2]

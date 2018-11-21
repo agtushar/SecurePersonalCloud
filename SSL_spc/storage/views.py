@@ -7,7 +7,8 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 import sqlite3
 import hashlib
-from urllib.parse import urlencode
+import urllib
+from urllib.parse import quote
 
 def upload(request):
     user = authenticate(username=request.POST['name'], password=request.POST['password'])
@@ -97,17 +98,17 @@ def deletefile(request):
 
 def direct_Str(request):
     if request.user.is_authenticated:
-        print(request.POST.keys())
         uname = request.user.username
         usrt = models.MyUser.objects.get(username=uname)
-        flnames = []
+        iflnames = [];flnames = [];
         for temp in usrt.files.all():
-            flnames.append(temp.filename)
+            iflnames.append(temp.filename)
         strt = request.GET.get('directn', uname)
         print(strt)
-        for temp in flnames:
-            if temp.find(strt) != 0:
-                flnames.remove(temp)
+        for temp in iflnames:
+            if temp.find(strt) == 0:
+                flnames.append(temp)
+        print(flnames)
         html = "<p>This is the current list of files</p> <ul> Files"
         vfls = []
         for temp in flnames:
@@ -120,7 +121,7 @@ def direct_Str(request):
             else:
                 tempst2 = tempst[:num]
                 if tempst2 not in vfls:
-                    htst = '''<li><a href="http://127.0.0.1:8000/storage/direct_Str/?directn='''+str(strt+'/'+tempst2).replace('/', '%2F')+'''">'''+tempst2+"</a></li>"
+                    htst = '''<li><a href="http://127.0.0.1:8000/storage/direct_Str/?directn='''+urllib.parse.quote(strt+'/'+tempst2, safe='')+'''">'''+tempst2+"</a></li>"
                     tempht = html+htst
                     html = tempht
                     vfls.append(tempst2)

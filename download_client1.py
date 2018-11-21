@@ -46,7 +46,7 @@ for key, value in rldata.items():
         os.makedirs(directory)
     with open(key,'w') as wf:
         var=rldata[key][0].encode('ISO-8859-1')
-        print(type(var))
+        #print(type(var))
         c=''
         if scheme=='1':
             tobe=key_made.decrypt(var)
