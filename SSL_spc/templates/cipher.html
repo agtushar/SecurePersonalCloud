@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Key for Decyption{% endblock %}
+
+{% block content %}
+<h2>Please Specify Key for Decryption</h2>
+<form method="post">
+{% csrf_token %}
+{{ form.as_p }}
+<button type="submit">Submit</button>
+</form>
+{% endblock %}

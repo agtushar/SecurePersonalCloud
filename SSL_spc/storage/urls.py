@@ -9,4 +9,5 @@ urlpatterns = [
     path('md5s/', csrf_exempt(views.md5s), name='md5s'),
     path('deletefile/', csrf_exempt(views.deletefile), name='deletefile'),
     path('direct_Str/', csrf_exempt(views.direct_Str), name='direct_Str'),
+    path('keyVerify/', csrf_exempt(views.keyVerify), name='keyVerify'),
     ]

@@ -9,6 +9,7 @@ import sqlite3
 import hashlib
 import urllib
 from urllib.parse import quote
+from .forms import PostForm
 
 def upload(request):
     user = authenticate(username=request.POST['name'], password=request.POST['password'])
@@ -115,7 +116,7 @@ def direct_Str(request):
             tempst = temp[len(strt):]
             num = tempst.find('/')
             if num == -1:
-                htst = '''<li><a href="http://127.0.0.1:8000/storage/openFile/?filename='''+temp+'''">'''+tempst+"</a></li>"
+                htst = '''<li><a href="http://127.0.0.1:8000/storage/keyVerify/?filename='''+temp+'''">'''+tempst+"</a></li>"
                 tempht = html+htst
                 html = tempht
             else:
@@ -132,3 +133,19 @@ def direct_Str(request):
     else:
         html = "<p>You need to login to perform this operation</p>"
     return HttpResponse(html)
+
+def keyVerify(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            uname = request.user.username
+            flname = request.GET.get('filename')
+            form = PostForm(request.POST)
+            form.save()
+            key1 = form.cleaned_data.get('key1')
+            key2 = form.cleaned_data.get('key2')
+            schema = form.cleaned_data.get('schema')
+            return redirect('displayFile', k1=key1, k2=key2, sc=schema)
+        else:
+            print("herobro")
+            form = PostForm()
+            return render(request, 'cipher.html', {'form': form})
