@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 import sqlite3
 import hashlib
+from urllib.parse import urlencode
 
 def upload(request):
     user = authenticate(username=request.POST['name'], password=request.POST['password'])
@@ -93,3 +94,40 @@ def deletefile(request):
         return resp
     else:
         return HttpResponse(json.dumps({'userFail':'true'}))
+
+def direct_Str(request):
+    if request.user.is_authenticated:
+        print(request.POST.keys())
+        uname = request.user.username
+        usrt = models.MyUser.objects.get(username=uname)
+        flnames = []
+        for temp in usrt.files.all():
+            flnames.append(temp.filename)
+        strt = request.GET.get('directn', uname)
+        print(strt)
+        for temp in flnames:
+            if temp.find(strt) != 0:
+                flnames.remove(temp)
+        html = "<p>This is the current list of files</p> <ul> Files"
+        vfls = []
+        for temp in flnames:
+            tempst = temp[len(strt)+1:]
+            num = tempst.find('/')
+            if num == -1:
+                htst = '''<li><a href="http://127.0.0.1:8000/storage/openFile/?filename='''+temp+'''">'''+tempst+"</a></li>"
+                tempht = html+htst
+                html = tempht
+            else:
+                tempst2 = tempst[:num]
+                if tempst2 not in vfls:
+                    htst = '''<li><a href="http://127.0.0.1:8000/storage/direct_Str/?directn='''+str(strt+'/'+tempst2).replace('/', '%2F')+'''">'''+tempst2+"</a></li>"
+                    tempht = html+htst
+                    html = tempht
+                    vfls.append(tempst2)
+                else:
+                    pass
+            tempht = html + "</ul>"
+            html = tempht
+    else:
+        html = "<p>You need to login to perform this operation</p>"
+    return HttpResponse(html)
