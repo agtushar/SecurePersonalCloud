@@ -175,13 +175,14 @@ def display(request):
         context={}
         flname = temp.filename[len(user):]
         data[flname] = temp.content.decode('utf-8').encode('ISO-8859-1')
-        # decyrpt data here
-        key="011bytes"
-        key = key.encode('utf-8')
-        d = des(key)
-        decrypteddata =d.decrypt(data[flname])
-        y = decrypteddata.decode('ISO-8859-1')
-        c = y.rstrip()
+        # # decyrpt data here
+        # key="011bytes"
+        # key = key.encode('utf-8')
+        # d = des(key)
+        # decrypteddata =d.decrypt(data[flname])
+        # y = decrypteddata.decode('ISO-8859-1')
+        # c = y.rstrip()
+        c="blahbla" #FIX LATEER
         context["filename"] = os.path.basename(flname)
         type=mimetypes.guess_type(flname)[0]
         type=type[:type.find("/")]
@@ -196,11 +197,11 @@ def display(request):
 
             template=loader.get_template('web_client/video.html')
         elif (type=="text"):
-            plaindat=c.encode('ISO-8859-1')
-            b64bin = base64.b64encode(c.encode('ISO-8859-1'))
-            context["text"] = plaindat.decode()
-            context["b64"]=b64bin.decode()
-
+            plaindat=data[flname]
+            #b64bin = base64.b64encode(c.encode('ISO-8859-1'))
+            context["text"] = plaindat.decode('ISO-8859-1')
+            #context["b64"]=b64bin.decode()
+            context["b64"]="hello"
             template=loader.get_template('web_client/rendertext.html')
 
         # response = HttpResponse(content_type=mimetypes.guess_type(flname))
