@@ -144,19 +144,8 @@ def direct_Str(request):
     return HttpResponse(html)
 
 def keyVerify(request):
-    if request.user.is_authenticated:
-        if request.method == 'POST':
-            uname = request.user.username
-            flname = request.GET.get('filename')
-            form = PostForm(request.POST)
-            key1 = form.cleaned_data.get('key1')
-            key2 = form.cleaned_data.get('key2')
-            schema = form.cleaned_data.get('schema')
-            return redirect('displayFile',flname)
-        else:
-            print("herobro")
-            form = PostForm()
-            return render(request, 'cipher.html', {'form': form})
+    form = PostForm()
+    return render(request, 'cipher.html', {'form': form})
 
 def display(request,filen):
     user = None
