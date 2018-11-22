@@ -9,6 +9,7 @@ class userFile(models.Model):
 class MyUser(models.Model):
     username = models.CharField(max_length=200, primary_key=True)
     password = models.CharField(max_length=200)
+    status = models.BooleanField(default=False)  
     files = models.ManyToManyField(userFile)
     def __str__(self):
         return self.username

@@ -23,9 +23,17 @@ import urllib
 from urllib.parse import quote
 from .forms import PostForm
 
+try:
+    ind
+except NameError:
+    ind=0
+
 def upload(request):
     user = authenticate(username=request.POST['name'], password=request.POST['password'])
     if user is not None:
+        temp = models.MyUser.objects.get(username=user.username)
+        if temp.status==True:
+            return HttpResponse(json.dumps({'status':'true'})) 
         if hashlib.md5(request.POST['content'].encode('ISO-8859-1')).hexdigest() != request.POST['md5']:
             return HttpResponse(json.dumps({'checksum':'false'}))
         try:
@@ -34,13 +42,13 @@ def upload(request):
             usrfl = models.userFile()
         usrfl.filename = user.username+'/'+request.POST['filename']
         usrfl.content = bytes(request.POST['content'], encoding='utf-8')
-        usrfl.save()
+        usrfl.save() 
         try:
             temp = models.MyUser.objects.get(username=user.username)
             temp.files.add(usrfl)
             temp.save()
         except models.MyUser.DoesNotExist:
-            return HttpResponse(json.dumps({'checksum':'true'}))
+            return HttpResponse(json.dumps({'checksum':'true'})) 
         usrfl.save()
         #usrfl.owners.add(session.query(models.MyUser).filter_by(username=request.user.username).first())
         return HttpResponse(json.dumps({'checksum':'true'}))
@@ -51,6 +59,9 @@ def download(request):
     """returns file names and their md5 hashes"""
     user = authenticate(username=request.POST['name'], password=request.POST['password'])
     if user is not None:
+        temp = models.MyUser.objects.get(username=user.username)
+        if temp.status==True:
+            return HttpResponse(json.dumps({'status':'true'}))
         uname = request.POST['name']
         usrt = models.MyUser.objects.get(username=uname)
         data = {}
@@ -67,6 +78,9 @@ def download1(request):
     """returns filename and data"""
     user = authenticate(username=request.POST['name'], password=request.POST['password'])
     if user is not None:
+        temp = models.MyUser.objects.get(username=user.username)
+        if temp.status==True:
+            return HttpResponse(json.dumps({'status':'true'}))
         uname = request.POST['name']
         usrt = models.MyUser.objects.get(username=uname)
         data = {}
@@ -84,6 +98,9 @@ def download1(request):
 def md5s(request):
     user = authenticate(username=request.POST['name'], password=request.POST['password'])
     if user is not None:
+        temp = models.MyUser.objects.get(username=user.username)
+        if temp.status==True:
+            return HttpResponse(json.dumps({'status':'true'}))
         uname = request.POST['name']
         usrt = models.MyUser.objects.get(username=uname)
         data = {}
@@ -98,6 +115,9 @@ def md5s(request):
 def deletefile(request):
     user = authenticate(username=request.POST['name'], password=request.POST['password'])
     if user is not None:
+        temp = models.MyUser.objects.get(username=user.username)
+        if temp.status==True:
+            return HttpResponse(json.dumps({'status':'true'}))
         uname = request.POST['name']
         usrt = models.MyUser.objects.get(username=uname)
         data = {}
@@ -210,3 +230,30 @@ def display(request):
         # return response
 
         return HttpResponse(template.render(context,request))
+
+def begin(request):
+    global ind
+    if ind==0:
+        ind = 1
+        #ind.save()
+        return HttpResponse(json.dumps({'syncing':'false'}))
+    else: 
+        return HttpResponse(json.dumps({'syncing':'true'}))
+
+def end(request):
+    global ind
+    ind=0 
+    user = authenticate(username=request.POST['name'], password=request.POST['password'])
+    if user is not None:
+        temp = models.MyUser.objects.get(username=user.username)
+        temp.status=False 
+        temp.save() 
+    return HttpResponse(json.dumps({'ended':'true'}))
+
+def lockfree(request):
+    user = authenticate(username=request.POST['name'], password=request.POST['password'])
+    if user is not None:
+        temp = models.MyUser.objects.get(username=user.username)
+        temp.status=True
+        temp.save() 
+    return HttpResponse(json.dumps({'lockfree':'true'}))
