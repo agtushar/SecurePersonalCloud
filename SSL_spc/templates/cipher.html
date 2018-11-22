@@ -4,9 +4,48 @@
 
 {% block content %}
 <h2>Please Specify Key for Decryption</h2>
-<form method="post">
+<form id="frm">
 {% csrf_token %}
 {{ form.as_p }}
-<button type="submit">Submit</button>
 </form>
+<!--<h2 id="key1"></h2>
+<h2 id="key2"></h2>
+<h2 id="schema"></h2>-->
+<button onclick="myFunction()">Submit</button>
+<a href="http://127.0.0.1:8000/storage/direct_Str">Go to Your Files</a>
+<script>
+    /*var gm1 = getCookie("key1");
+    var gm2 = getCookie("key2");
+    var gm3 = getCookie("schema");
+    document.getElementById("key1").innerHTML = "key1 "+gm1;
+    document.getElementById("key2").innerHTML = "key2 "+gm2;
+    document.getElementById("schema").innerHTML = "schema "+gm3;*/
+function myFunction() {
+    var x = document.getElementById("frm");
+    var key1 = x.elements[1].value;
+    var key2 = x.elements[2].value;
+    var schema = x.elements[3].value;
+    var d = new Date();
+    d.setTime(d.getTime() + (1*24*60*60*1000));
+    var expires = "expires=" + d.toGMTString();
+    document.cookie = "key1=" + key1 +";" + expires + ";path=/";
+    document.cookie = "key2=" + key2 +";" + expires + ";path=/";
+    document.cookie = "schema=" + schema +";" + expires + ";path=/";
+    }
+function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "herooo";
+}
+</script>
 {% endblock %}
