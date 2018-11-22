@@ -1,12 +1,19 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+import mimetypes
+from .forms import PostForm
 import requests
+from django.shortcuts import redirect
+import base64
+from django.template import loader
 from django.contrib.auth import authenticate, login
 from . import models
 from django.views.decorators.csrf import csrf_exempt
 import json
 import sqlite3
 import hashlib
+import pyDes
+from pyDes import des
 import urllib
 from urllib.parse import quote
 from .forms import PostForm
@@ -36,6 +43,7 @@ def upload(request):
         return HttpResponse(json.dumps({'checksum':'true'}))
 
 def download(request):
+    """returns file names and their md5 hashes"""
     user = authenticate(username=request.POST['name'], password=request.POST['password'])
     if user is not None:
         uname = request.POST['name']
@@ -51,6 +59,7 @@ def download(request):
         return HttpResponse(html)
 
 def download1(request):
+    """returns filename and data"""
     user = authenticate(username=request.POST['name'], password=request.POST['password'])
     if user is not None:
         uname = request.POST['name']
@@ -140,12 +149,61 @@ def keyVerify(request):
             uname = request.user.username
             flname = request.GET.get('filename')
             form = PostForm(request.POST)
-            form.save()
             key1 = form.cleaned_data.get('key1')
             key2 = form.cleaned_data.get('key2')
             schema = form.cleaned_data.get('schema')
-            return redirect('displayFile', k1=key1, k2=key2, sc=schema)
+            return redirect('displayFile',flname)
         else:
             print("herobro")
             form = PostForm()
             return render(request, 'cipher.html', {'form': form})
+
+def display(request,filen):
+    user = None
+    html=""
+    if request.user.is_authenticated:
+        user = request.user.username
+    else:
+        html = "<html><body>You must be logged in to perform following activity.</body></html>"
+        return HttpResponse(html)
+    if user is not None:
+        uname = user
+        usrt = models.MyUser.objects.get(username=uname)
+        temp = usrt.files.get(filename=filen)
+        data = {}
+        context={}
+        flname = temp.filename[len(uname):]
+        data[flname] = temp.content.decode('utf-8').encode('ISO-8859-1')
+        # decyrpt data here
+        key="011bytes"
+        key = key.encode('utf-8')
+        d = des(key)
+        decrypteddata =d.decrypt(data[flname])
+        y = decrypteddata.decode('ISO-8859-1')
+        c = y.rstrip()
+        context["filename"] = flname
+        type=mimetypes.guess_type(flname)[0]
+        type=type[:type.find("/")]
+        if (type=="image"):
+            c = base64.b64encode(c.encode('ISO-8859-1'))
+            context["image"] = c.decode()
+            template=loader.get_template('web_client/image.html')
+        elif (type=="video"):
+            c = base64.b64encode(c.encode('ISO-8859-1'))
+            context["video"] = c.decode()
+
+            template=loader.get_template('web_client/video.html')
+        elif (type=="text"):
+            plaindat=c.encode('ISO-8859-1')
+            b64bin = base64.b64encode(c.encode('ISO-8859-1'))
+            context["text"] = plaindat.decode()
+            context["b64"]=b64bin.decode()
+
+            template=loader.get_template('web_client/rendertext.html')
+
+        # response = HttpResponse(content_type=mimetypes.guess_type(flname))
+        # response['Content-Disposition'] = 'attachment; filename=%s' % flname  # force browser to download file
+        # response.write(data[flname])
+        # return response
+
+        return HttpResponse(template.render(context,request))

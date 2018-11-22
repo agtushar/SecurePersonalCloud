@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>{{filename}}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+<div class="container">
+    <a download="{{filename}}" href="data:video/mp4;charset=utf-8;base64,{{video}}">
+        <button type="button" class="btn btn-primary">Download</button>
+    </a>
+<video id="player" src="" controls></video>
+<script>
+function htmlDecode(input) {
+  var doc = new DOMParser().parseFromString(input, "text/html");
+  return doc.documentElement.textContent;
+}
+var player = document.getElementById('player');
+var str2 = "{{video}}";
+var str3 = window.htmlDecode(str2);
+player.src = "data:video/webm;base64,"+str3;
+document.body.appendChild(img);
+</script>
+</div>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>{{filename}}</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+<div class="container">
+    <a download="{{filename}}" href="data:image/pipeg;charset=utf-8;base64,{{image}}">
+        <button type="button" class="btn btn-primary">Download</button>
+    </a>
+<Image id="im" src="" />
+<script>
+function htmlDecode(input) {
+  var doc = new DOMParser().parseFromString(input, "text/html");
+  return doc.documentElement.textContent;
+}
+var im = document.getElementById('im');
+var str2 = "{{image}}";
+var str3 = window.htmlDecode(str2);
+im.src = "data:image/jpeg;base64,"+str3;
+document.body.appendChild(im);
+</script>
+</div>
+</body>
+</html>
