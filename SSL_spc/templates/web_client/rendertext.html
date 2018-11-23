@@ -7,7 +7,6 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
-
 <body>
 <div class="container">
 <a id="downloadlink" download="{{filename}}" href="">
@@ -121,7 +120,6 @@ var key1=getCookie("key1");
 var cipher = new ARC4(key1);
 var decrypted = cipher.decrypt(data);
 var pre=document.getElementById("emb");
-console.log(typeof decrypted
 pre.src="data:text/plain;base64,"+btoa(decrypted);
 var downloadlink=document.getElementById("downloadlink");
 downloadlink.href="data:application/octet-stream;charset=utf-8;base64,"+btoa(decrypted);
