@@ -17,8 +17,6 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 import sqlite3
 import hashlib
-import pyDes
-from pyDes import des
 import urllib
 from urllib.parse import quote
 from .forms import PostForm
@@ -202,26 +200,26 @@ def display(request):
         # decrypteddata =d.decrypt(data[flname])
         # y = decrypteddata.decode('ISO-8859-1')
         # c = y.rstrip()
-        c="blahbla" #FIX LATEER
         context["filename"] = os.path.basename(flname)
         type=mimetypes.guess_type(flname)[0]
         type=type[:type.find("/")]
         print(type)
         if (type=="image"):
-            c = base64.b64encode(c.encode('ISO-8859-1'))
-            context["image"] = c.decode()
+            plaindat = data[flname]
+            context["image"] = [];
+            for byt in plaindat:
+                context["image"].append(byt);
+            print(context["image"][:10])
             template=loader.get_template('web_client/image.html')
         elif (type=="video"):
-            c = base64.b64encode(c.encode('ISO-8859-1'))
-            context["video"] = c.decode()
-
+            plaindat=data[flname]
+            context["video"] = []
+            for byt in plaindat:
+                context["video"].append(byt);
             template=loader.get_template('web_client/video.html')
         elif (type=="text"):
             plaindat=data[flname]
-            #b64bin = base64.b64encode(c.encode('ISO-8859-1'))
             context["text"] = plaindat.decode('ISO-8859-1')
-            #context["b64"]=b64bin.decode()
-            context["b64"]="hello"
             template=loader.get_template('web_client/rendertext.html')
 
         # response = HttpResponse(content_type=mimetypes.guess_type(flname))
