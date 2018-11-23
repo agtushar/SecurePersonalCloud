@@ -4,15 +4,18 @@
 
 {% block content %}
 <h2>Please Specify Key for Decryption</h2>
-<form id="frm">
+<form id="frm" class="form-horizontal">
 {% csrf_token %}
 {{ form.as_p }}
 </form>
 <!--<h2 id="key1"></h2>
 <h2 id="key2"></h2>
 <h2 id="schema"></h2>-->
-<button onclick="myFunction()">Submit</button>
-<a href="http://127.0.0.1:8000/storage/direct_Str">Go to Your Files</a>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<button class="btn btn-danger" onclick="myFunction()">Submit</button>
+<a class="btn btn-info" href="http://127.0.0.1:8000/storage/direct_Str">Go to Your Files</a>
 <script>
     /*var gm1 = getCookie("key1");
     var gm2 = getCookie("key2");
