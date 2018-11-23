@@ -51,6 +51,7 @@ elif [[ "$1" = "sync" ]]; then
     elif [[ $encr = '3' ]]; then
     	python3 sync.py $name $pass $obs $encr $entr1 
     fi
+    spc status
 
 elif [[ "$1" = "status" ]]; then
 	while read -r line
@@ -154,6 +155,14 @@ elif [ "$1" = "help" ]; then
 elif [ "$1" = "version" ]; then
     echo "VERSION 1"
 
+elif [ "$1" = "startPsync" ]; then
+    systemctl status cron
+    var1=`pwd`
+    var2=`echo "$var1/periodicSync.sh"`
+    crontab -l ; echo "* * * * * export DISPLAY=:0 && bash $var2" | crontab -
+
+elif [ "$1" = "endSync" ]; then
+    crontab -r
 else
     echo "Invalid command"
     echo "For details- spc help"
