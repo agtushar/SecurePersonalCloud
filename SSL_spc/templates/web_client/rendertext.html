@@ -6,6 +6,9 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+      <script type="text/javascript" src="https://cdn.rawgit.com/ricmoo/aes-js/e27b99df/index.js"></script>
+
+
 </head>
 <body>
 <div class="container">
@@ -15,7 +18,7 @@
 <pre id="dat">
 <embed id="emb" src="">
 </pre>
-<script>
+ <script>
     var ARC4 = function(key){
     var s = new Array(256);
     var s2 = new Array(256);
@@ -114,16 +117,33 @@ function getCookie(cname) {
     }
     return "";
 }
-var htmlencdata="{{text}}";
-var data=window.htmlDecode(htmlencdata);
 var key1=getCookie("key1");
-var cipher = new ARC4(key1);
-var decrypted = cipher.decrypt(data);
-var pre=document.getElementById("emb");
-pre.src="data:text/plain;base64,"+btoa(decrypted);
-var downloadlink=document.getElementById("downloadlink");
-downloadlink.href="data:application/octet-stream;charset=utf-8;base64,"+btoa(decrypted);
-</script>
+var key2=getCookie("key2");
+var schema=getCookie("schema");
+if(schema == "ARC4")
+{
+    var cipher = new ARC4(key1);
+    var decrypted = cipher.decrypt({{text}});
+    console.log(decrypted)
+    var emb=document.getElementById("emb");
+    emb.src="data:text/plain;base64,"+btoa(decrypted);
+    var downloadlink=document.getElementById("downloadlink");
+   downloadlink.href="data:application/octet-stream;charset=utf-8;base64,"+btoa(decrypted);
+
+}
+else if(schema == 'AES')
+{
+    key1 = aesjs.utils.utf8.toBytes(key1);
+    key2 = aesjs.utils.utf8.toBytes(key2);
+    var aesCbc = new aesjs.ModeOfOperation.cbc(key1, key2);
+    var decryptedUintarray = aesCbc.decrypt({{text}});
+    var decryptedBytes=Array.from(decryptedUintarray);
+    var emb=document.getElementById("emb");
+    emb.src="data:text/plain;base64,"+btoa(decryptedBytes);
+    var downloadlink=document.getElementById("downloadlink");
+    downloadlink.href="data:application/octet-stream;charset=utf-8;base64,"+btoa(decryptedBytes);
+
+}</script>
 </div>
 
 </body>

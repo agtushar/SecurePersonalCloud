@@ -123,7 +123,7 @@ if(schema == "ARC4")
     console.log(decrypted)
     var im=document.getElementById("im");
     im.src="data:image/jpeg;base64,"+btoa(decrypted);
-    document.body.appendChild(im);
+
     var downloadlink=document.getElementById("downloadlink");
     downloadlink.href="data:image/pipeg;charset=utf-8;base64,"+btoa(decrypted);
 }
@@ -132,13 +132,13 @@ else if(schema == 'AES')
     key1 = aesjs.utils.utf8.toBytes(key1);
     key2 = aesjs.utils.utf8.toBytes(key2);
     var aesCbc = new aesjs.ModeOfOperation.cbc(key1, key2);
-    var decryptedBytes = aesCbc.decrypt(encryptedBytes);
-    console.log(decrypted)
+    console.log({{image}});
+    var decryptedUintarray = aesCbc.decrypt({{image}});
+    var decryptedBytes=Array.from(decryptedUintarray);
     var im=document.getElementById("im");
-    im.src="data:image/jpeg;base64,"+btoa(decrypted);
-    document.body.appendChild(im);
+    im.src="data:image/jpeg;base64,"+btoa(decryptedBytes);
     var downloadlink=document.getElementById("downloadlink");
-    downloadlink.href="data:image/pipeg;charset=utf-8;base64,"+btoa(decrypted);
+    downloadlink.href="data:image/pipeg;charset=utf-8;base64,"+btoa(decryptedBytes);
 }
 </script>
 
