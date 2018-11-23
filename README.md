@@ -41,7 +41,7 @@ give absolute path in directory name
 
 We offer 3 encryption schemes on linux client:
 * [ARC4](https://en.wikipedia.org/wiki/RC4): requires one key of length 8 
-* [DES](https://en.wikipedia.org/wiki/Data_Encryption_Standard): requires one key of length 8 
+* [Blowfish](https://en.wikipedia.org/wiki/Blowfish_(cipher)): requires one key of length 8 
 * [AES](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard): requires two keys of length 16 each 
 
 ```
@@ -83,7 +83,7 @@ A user has to be logged in for web client.
 
 Enter Decryption key and encryption schema.
 [https:/127.0.0.1:8000/storage/keyVerify](https:/127.0.0.1:8000/storage/keyVerify)
-Enter decryption key at key1 for ARC4 and DES.
+Enter decryption key at key1 for ARC4 and Blowfish.
 
 
 ### Files
