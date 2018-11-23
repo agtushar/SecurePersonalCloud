@@ -8,7 +8,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 import os
-
+import time
 import base64
 from django.template import loader
 from django.contrib.auth import authenticate, login
@@ -25,6 +25,11 @@ try:
     ind
 except NameError:
     ind=0
+
+try:
+    tm 
+except NameError:
+    tm=0
 
 def upload(request):
     user = authenticate(username=request.POST['name'], password=request.POST['password'])
@@ -55,6 +60,7 @@ def upload(request):
 
 def download(request):
     """returns file names and their md5 hashes"""
+    print(id)
     user = authenticate(username=request.POST['name'], password=request.POST['password'])
     if user is not None:
         temp = models.MyUser.objects.get(username=user.username)
@@ -74,6 +80,7 @@ def download(request):
 
 def download1(request):
     """returns filename and data"""
+    print(ind)
     user = authenticate(username=request.POST['name'], password=request.POST['password'])
     if user is not None:
         temp = models.MyUser.objects.get(username=user.username)
@@ -231,6 +238,12 @@ def display(request):
 
 def begin(request):
     global ind
+    global tm
+    z=time.time()
+    #print(z-tm)
+    if z-tm >20:
+        ind=0
+        tm=z 
     if ind==0:
         ind = 1
         #ind.save()

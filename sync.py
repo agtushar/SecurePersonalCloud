@@ -76,7 +76,7 @@ if flag==1:
 			else: 
 
 
-				timeout = 5
+				timeout = 30
 				t = threading.Timer(timeout, helper)
 				t.start()
 				prompt = "File exists in server. Want to download? 'N' for no\n"
@@ -166,7 +166,7 @@ if flag==1:
 					if sc=='status':
 						cs=cs+item+'\n'
 					else:
-						timeout = 5
+						timeout = 30
 						t = threading.Timer(timeout, helper)
 						t.start()
 						prompt = "Files exist locally and at server. '1' for server copy, '2' for local copy "+item+"\n"
