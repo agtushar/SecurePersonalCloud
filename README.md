@@ -80,22 +80,22 @@ spc version
 ### Signup/Login
 
 
-First run local server * [https:/127.0.0.1/](https:/127.0.0.1/) and then
-Login * [https:/127.0.0.1/accounts/login](https:/127.0.0.1/accounts/login) or
-Signup * [https:/127.0.0.1/accounts/signup](https:/127.0.0.1/accounts/signup) and then login.
+First run local server [https:/127.0.0.1:8000](https:/127.0.0.1:8000/) and then
+Login [https:/127.0.0.1:8000/accounts/login](https:/127.0.0.1:8000/accounts/login) or
+Signup [https:/127.0.0.1:8000/accounts/signup](https:/127.0.0.1:8000/accounts/signup) and then login.
 A user has to be logged in for web client.
 
 
 ### Decryption
 
 Enter Decryption key and encryption schema.
-* [https:/127.0.0.1/storage/keyVerify](https:/127.0.0.1/storage/keyVerify)
+[https:/127.0.0.1:8000/storage/keyVerify](https:/127.0.0.1:8000/storage/keyVerify)
 Enter decryption key at key1 for ARC4 and DES.
 
 
 ### Files
 
-Find files at * [http://127.0.0.1:8000/storage/direct_Str](http://127.0.0.1:8000/storage/direct_Str)
+Find files at [http://127.0.0.1:8000/storage/direct_Str](http://127.0.0.1:8000/storage/direct_Str)
 
 ## Team 011bytes
 
