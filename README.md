@@ -7,13 +7,6 @@ Clone our repo
 ```
 git clone https://github.com/tusharag121099/SecurePersonalCloud
 ```
-### Prerequisites
-
-What things you need to install the software and how to install them
-
-```
-Give examples
-```
 
 ### Installing and Signup
 
