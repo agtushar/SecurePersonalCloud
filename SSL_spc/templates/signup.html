@@ -3,10 +3,32 @@
 {% block title %}Sign Up{% endblock %}
 
 {% block content %}
-  <h2>Sign up</h2>
+<head>
+  <title>011bytes</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	</head>
+	<body style="
+    margin-top: 100px;
+    margin-bottom: 100px;
+    margin-right: 150px;
+    margin-left: 80px;
+    background-image: url('paper.gif');
+    background-color: #cccccc;">
+  <h1 style="color:red;">Sign up</h1> 
+  <div style="
+    margin-top: 20px;
+    margin-bottom: 100px;
+    margin-right: 150px;
+    margin-left: 20px;">
     <form method="post">
         {% csrf_token %}
             {{ form.as_p }}
-                <button type="submit">Sign up</button>
+                <button type="submit" class="btn btn-primary btn-lg">Sign up</button>
                   </form>
+              </div>
+              </body>
                   {% endblock %}

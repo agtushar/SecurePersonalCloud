@@ -2,19 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="ISO-8859-1">
-    <title>{{dirname}}</title>
+    <title>{{title}}</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 
 <body>
-
-<div class="container">
-    {% for i in list %}
-    <li>
-
-    </li>
+<div style="margin: 25px 50px 75px 100px;" class="container">
+    {% for key, value in dict.items %}
+    <a href={{value}} class="list-group-item list-group-item-info list-group-item-action">{{key}}</a>
     {% endfor %}
 </div>
 </body>
