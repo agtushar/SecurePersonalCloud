@@ -32,14 +32,14 @@ http://127.0.0.1:8000/accounts/signup/
 ### configure user
 
 ```
-spc configure
+$spc configure
 ```
 
 
 ### configure directory 
 
 ```
-spc observe <directory name>
+$spc observe <directory name>
 ```
 give absolute path in directory name
 
@@ -52,14 +52,14 @@ We offer 3 encryption schemes on linux client:
 * [AES](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard): requires two keys of length 16 each 
 
 ```
-spc en-de update
+$spc en-de update
 ```
 enter scheme with which you would like to encrypt your data and a key
 
 ### Upload/Download
 
 ```
-spc sync
+$spc sync
 ```
 This makes client's observed directory and server's copy(encryted though) to be exact same snapshots of each other.
 If a file is available on server but not on client, there are two options either to delete server's copy or to download server's copy.
@@ -68,12 +68,12 @@ Conversly, if a files is available only on client, this command uploads encryted
 ### Versioning
 
 ```
-spc version
+$spc version
 ```
 
 ### Update
  ```
- spc update
+ $spc update
  ```
 ## Web Client
 
