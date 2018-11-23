@@ -1,20 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="ISO-8859-1">
-    <title>{{filename}}</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-</head>
-
-<body>
-<div class="container">
-    <!--<a download="{{filename}}" id="downloadlink" href="">-->
-        <!--<button type="button" class="btn btn-primary">Download</button>-->
-    <!--</a>-->
-<video id="player" src="" controls></video>  <script>
-    var ARC4 = function(key){
+var ARC4 = function(key){
     var s = new Array(256);
     var s2 = new Array(256);
 
@@ -91,38 +75,45 @@ Array.prototype.isEqualTo = function(array){
 
     return true;
 }
-</script>
-<script type="text/javascript">
-function htmlDecode(input) {
-  var doc = new DOMParser().parseFromString(input, "text/html");
-  return doc.documentElement.textContent;
-}
-function getCookie(cname) {
-    var name = cname + "=";
-    var decodedCookie = decodeURIComponent(document.cookie);
-    var ca = decodedCookie.split(';');
-    for(var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-        }
-    }
-    return "";
-}
-var key1=getCookie("key1");
-console.log(key1);
-var cipher = new ARC4(key1);
-var decrypted = cipher.decrypt({{video}});
-console.log(decrypted)
-var player = document.getElementById('player');
-player.src = "data:video/webm;base64,"+btoa(decrypted);
-/*var downloadlink=document.getElementById("downloadlink");
-downloadlink.href="data:video/mp4;charset=utf-8;base64,"+btoa(decrypted);*/
-</script>
 
-</div>
-</body>
-</html>
+// var cipher = new ARC4('Key');
+// var buffer = cipher.encrypt('Plaintext');
+
+// console.log("-- Encrypted --");
+// console.log(buffer);
+// console.log(buffer.toString());
+
+// var otherBuff = cipher.decrypt(buffer)
+// console.log("-- Decrypted --");
+// console.log(otherBuff);
+// console.log(otherBuff.toString());
+
+
+var test = function (func){
+    var testKeys = [
+        {
+            "key":"Key", "text":"Plaintext", "cipherText":[0xBB, 0xF3, 0x16, 0xE8, 0xD9, 0x40, 0xAF, 0x0A, 0xD3]
+        },
+        {
+            "key":"Wiki", "text":"pedia", "cipherText":[0x10, 0x21, 0xBF, 0x04, 0x020]
+        },
+        {
+            "key":"Secret", "text":"Attack at dawn", "cipherText":[0x45, 0xA0, 0x1F, 0x64, 0x5F, 0xC3, 0x5B, 0x38, 0x35, 0x52, 0x54, 0x4B, 0x9B, 0xF5]
+        }
+    ];
+
+    for (var i = 0; i < testKeys.length; i++) {
+        // Setup
+        var cipher = new func(testKeys[i].key);
+        var buffer = cipher.encrypt(testKeys[i].text)
+
+        if(buffer.isEqualTo(testKeys[i].cipherText)){
+             console.log("Test case: " + (i+1) + " was successful!!");
+        } else {
+             console.log("Test case: " + (i+1) + " was NOT successful!!");
+        }
+
+    }
+};
+
+test(ARC4);

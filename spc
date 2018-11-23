@@ -130,9 +130,31 @@ elif [[ "$1" = "en-de" ]]; then
 	fi
 
 elif [ "$1" = "server" ]; then
+    echo "Server operating at http://127.0.0.1:8000/"
+elif [ "$1" = "server" ]; then
     if [ "$2" = "set-url" ]; then
        echo $3 > ./server_url
     fi
 elif [ "$1" = "observe" ]; then
     echo $2 > ./direct_name
-fi 
+
+
+elif [ "$1" = "help" ]; then
+    echo "spc version :             Prints version"
+    echo "spc server :              Shows ip of the server"
+    echo "spc config edit :         To edit user credentials"
+    echo "spc observe <dir-path>:   Choose the directory to observe"
+    echo "spc sync :                For syncing directory with database"
+    echo "spc status :              Compare directory with server's database"
+    echo "spc en-de list :          list all encryption schemas"
+    echo "spc end-de update :       Update encryption schema and key(s)"
+    echo "spc en-de update <file>   Dump encryption schema from a file"
+    echo "spc en-de dump <file>     Dump current schema to the file"
+
+elif [ "$1" = "version" ]; then
+    echo "VERSION 1"
+
+else
+    echo "Invalid command"
+    echo "For details- spc help"
+fi
