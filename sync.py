@@ -55,6 +55,7 @@ if flag==1:
     cs=''
     for item in files[:-1]:
         if item[len(bstrt):] not in jsond.keys():
+            item="\""+item+"\""
             if sc=='1':
                 comm = 'python3 upload_client.py '+sys.argv[1]+' '+sys.argv[2]+' '+item+' '+sys.argv[4]+' '+sys.argv[5]
             elif sc=='2':
@@ -92,6 +93,7 @@ if flag==1:
                     res = rq.post('http://127.0.0.1:8000/storage/deletefile/', data={'name':sys.argv[1],'password':sys.argv[2],'filename':item})
                     print('Deleting ',item)
                 else:
+                    item="\""+item+"\""
                     if sc=='1':
                         os.system('python3 download_client1.py '+sys.argv[1]+' '+sys.argv[2]+' '+item+' '+sys.argv[4]+' '+sys.argv[5])
                     elif sc=='2': 
@@ -177,6 +179,7 @@ if flag==1:
                         if var is None:
                             res = rq.post('http://127.0.0.1:8000/storage/lockfree/', data={'name':sys.argv[1],'password':sys.argv[2]})
                         elif var == '1':
+                            item="\""+item+"\""
                             if sc=='1':
                                 os.system('python3 download_client1.py '+sys.argv[1]+' '+sys.argv[2]+' '+item+' '+sys.argv[4]+' '+sys.argv[5])
                             elif sc=='2':
@@ -185,6 +188,7 @@ if flag==1:
                                 os.system('python3 download_client1.py '+sys.argv[1]+' '+sys.argv[2]+' '+item+' '+sys.argv[4]+' '+sys.argv[5])
                             print('Downloading overwrite ',item)
                         else: 
+                            item="\""+item+"\""
                             if sc=='1':
                                 os.system('python3 upload_client.py '+sys.argv[1]+' '+sys.argv[2]+' '+item+' '+sys.argv[4]+' '+sys.argv[5])
                             elif sc=='2':

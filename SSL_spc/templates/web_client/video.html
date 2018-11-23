@@ -6,14 +6,17 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/ricmoo/aes-js/e27b99df/index.js"></script>
+
 </head>
 
 <body>
-<div class="container">
+<div style="margin: 5px 25px 25px 25px;" class="container">
     <!--<a download="{{filename}}" id="downloadlink" href="">-->
         <!--<button type="button" class="btn btn-primary">Download</button>-->
     <!--</a>-->
-<video id="player" src="" controls></video>  <script>
+<video style="margin: 5px 25px 25px 25px;" id="player" src="" download="{{filename}}"controls></video>
+    <script>
     var ARC4 = function(key){
     var s = new Array(256);
     var s2 = new Array(256);
@@ -113,12 +116,31 @@ function getCookie(cname) {
     return "";
 }
 var key1=getCookie("key1");
-console.log(key1);
-var cipher = new ARC4(key1);
-var decrypted = cipher.decrypt({{video}});
-console.log(decrypted)
-var player = document.getElementById('player');
-player.src = "data:video/webm;base64,"+btoa(decrypted);
+var key2=getCookie("key2");
+var schema=getCookie("schema");
+if(schema == "ARC4")
+{
+    var cipher = new ARC4(key1);
+    var decrypted = cipher.decrypt({{video}});
+    console.log(decrypted)
+    var player=document.getElementById("player");
+    player.src="data:video/mp4;base64,"+btoa(decrypted);
+    var downloadlink=document.getElementById("downloadlink");
+    downloadlink.href="data:video/webm;charset=utf-8;base64,"+btoa(decrypted);
+}
+else if(schema == 'AES')
+{
+    key1 = aesjs.utils.utf8.toBytes(key1);
+    key2 = aesjs.utils.utf8.toBytes(key2);
+    var aesCbc = new aesjs.ModeOfOperation.cbc(key1, key2);
+    var decryptedUintarray = aesCbc.decrypt({{video}});
+    var decryptedBytes=Array.from(decryptedUintarray);
+    var player=document.getElementById("player");
+    player.src="data:video/mp4;base64,"+btoa(decryptedBytes);
+    document.body.appendChild(player);
+    var downloadlink=document.getElementById("downloadlink");
+    downloadlink.href="data:video/web,;charset=utf-8;base64,"+btoa(decrypted);
+}
 /*var downloadlink=document.getElementById("downloadlink");
 downloadlink.href="data:video/mp4;charset=utf-8;base64,"+btoa(decrypted);*/
 </script>
