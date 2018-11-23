@@ -8,8 +8,7 @@ from Crypto.PublicKey import RSA
 from Crypto import Random
 from Crypto.Cipher import AES
 from Crypto.Cipher import ARC4
-import pyDes
-from pyDes import des 
+import blowfish
 
 scheme=sys.argv[4]
 if scheme=='1':
@@ -22,7 +21,7 @@ elif scheme=='2':
 elif scheme=='3':
     key=sys.argv[5]
     key=key.encode('utf-8')
-    d=des(key) 
+    d=blowfish.Cipher(key)  
 
 username = sys.argv[1]
 password = sys.argv[2]
@@ -63,8 +62,8 @@ for key, value in rldata.items():
             #with open('down.txt','wb') as wf:
             #    wf.write(content1.encode('ISO-8859-1'))
         elif scheme=='3': 
-            decd=d.decrypt(var)
-            y=decd.decode('ISO-8859-1')
+            decd=b"".join(d.decrypt_ecb(var))
+            y=decd.decode('ISO-8859-1')   
             c=y.rstrip()
-            wf.write(c.encode('ISO-8859-1'))
+            wf.write(c.encode('ISO-8859-1'))  
 

@@ -113,7 +113,7 @@ elif [[ "$1" = "en-de" ]]; then
 	    		echo $iv>>crypt
 	    		echo ''>>crypt
 	    		echo "Updated"
-	    	elif [[ "$schema" = "DES" ]]; then
+	    	elif [[ "$schema" = "blowfish" ]]; then
 	    		echo "3">crypt
 	    		read -p "key(length=8): " k
 	    		echo $k>>crypt

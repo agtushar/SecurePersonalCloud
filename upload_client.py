@@ -7,8 +7,7 @@ from Crypto.PublicKey import RSA
 from Crypto import Random
 from Crypto.Cipher import AES
 from Crypto.Cipher import ARC4
-import pyDes
-from pyDes import des 
+import blowfish 
 
 scheme=sys.argv[4]
 
@@ -25,7 +24,7 @@ elif scheme=='2':
 elif scheme=='3':
 	key=sys.argv[5]
 	key=key.encode('utf-8')
-	d=des(key) 
+	d=blowfish.Cipher(key) 
 
 username = sys.argv[1]
 password = sys.argv[2]
@@ -50,9 +49,8 @@ if scheme=='3':
 	extra=len(content1)%8
 	if extra>0:
 		content1=content1+(' '*(8-extra))
-	content1 = content1.encode('ISO-8859-1') 
-	#print("Encrypting")
-	content=d.encrypt(content1)
+	content1 = content1.encode('ISO-8859-1')
+	content=b"".join(d.encrypt_ecb(content1)) 
 
 #print(content)
 sendcon = content.decode('ISO-8859-1')

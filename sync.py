@@ -9,8 +9,7 @@ from Crypto.PublicKey import RSA
 from Crypto import Random
 from Crypto.Cipher import AES
 from Crypto.Cipher import ARC4
-import pyDes
-from pyDes import des
+import blowfish
 import time
 import threading
 
@@ -125,12 +124,13 @@ if flag==1:
                     if sys.argv[5]=='3':
                         key=sys.argv[6]
                         key=key.encode('utf-8')
-                        d=des(key)
+                        d=blowfish.Cipher(key) 
                         extra=len(conte)%8
                         if extra>0:
                             conte=conte+(' '*(8-extra))
                         conte = conte.encode('ISO-8859-1') 
-                        cont=d.encrypt(conte)
+                        cont=b"".join(d.encrypt_ecb(conte))
+
                 else:
                     if sc=='1':
                         key=sys.argv[5]
@@ -150,12 +150,12 @@ if flag==1:
                     if sc=='3':
                         key=sys.argv[5]
                         key=key.encode('utf-8')
-                        d=des(key)
+                        d=blowfish.Cipher(key) 
                         extra=len(conte)%8
                         if extra>0:
                             conte=conte+(' '*(8-extra))
                         conte = conte.encode('ISO-8859-1') 
-                        cont=d.encrypt(conte)
+                        cont=b"".join(d.encrypt_ecb(conte))
 
                 md5 = hashlib.md5(cont).hexdigest()
                 
