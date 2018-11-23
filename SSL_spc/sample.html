@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Testing Encryption & Decryption</title>
+<h2 id="kabali"></h2>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="http://cdn.bootcss.com/crypto-js/3.1.2/components/core.js"> 
+</script>
+<script src="http://cdn.bootcss.com/crypto-js/3.1.2/components/enc-base64.js"></script>
+<script src="https://cdn.bootcss.com/crypto-js/3.1.2/rollups/tripledes.js"> 
+</script>
+<script src="https://cdn.bootcss.com/crypto-js/3.1.2/components/mode-ecb.js"></script>
+<script src="https://cdn.bootcss.com/crypto-js/3.1.2/components/pad-nopadding.js"></script>
+
+</head>
+<body>
+  </body>
+  <script type="text/javascript">
+/*var key = 'E821752166E916AEEF940855';*/
+var key = '011bytes';
+
+function encryptByDESModeCBC(message) {
+    var ivHex = CryptoJS.enc.Utf8.parse(key);
+    console.log(ivHex);
+    var keyHex = CryptoJS.enc.Utf8.parse(key);
+    var encrypted = CryptoJS.DES.encrypt(message, keyHex, {
+        mode: CryptoJS.mode.ECB,
+        padding: CryptoJS.pad.Pkcs7
+    });
+    console.log(encrypted.toString());
+    return encrypted.toString();
+
+}
+
+
+function decryptByDESModeCBC(ciphertext) {
+    var keyHex = CryptoJS.enc.Utf8.parse(key);
+    // direct decrypt ciphertext
+    var decrypted = CryptoJS.DES.decrypt({
+        ciphertext: CryptoJS.enc.Base64.parse(ciphertext)
+    }, keyHex, {
+        mode: CryptoJS.mode.ECB,
+        padding: CryptoJS.pad.Pkcs7
+    });
+    return decrypted.toString(CryptoJS.enc.Utf8);
+}
+
+var texct = "You Suck";
+var texct1 = encryptByDESModeCBC(texct);
+var texct2 = decryptByDESModeCBC(texct1);
+document.getElementById("kabali").innerHTML = texct2;
+
+</script>
+  </html>
