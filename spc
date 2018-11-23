@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ "$1" = "config" ]]; then
+if [[ "$1" = "config" ]]; then 
     if [[ "$2" = "edit" ]]; then
         read -p "Username: " user
         read -sp "Password: " pass
@@ -14,6 +14,11 @@ if [[ "$1" = "config" ]]; then
             echo $pass >> ./config
         fi
     fi
+
+elif [[ ! -f config ]]; then
+    echo "You are not logged in"
+    echo "Use spc config edit"
+
 elif [[ "$1" = "sync" ]]; then
     ctr=0
     while read -r line
@@ -163,6 +168,10 @@ elif [ "$1" = "startPsync" ]; then
 
 elif [ "$1" = "endSync" ]; then
     crontab -r
+
+elif [ "$1" = "logout" ]; then
+    rm config direct_name crypt
+
 else
     echo "Invalid command"
     echo "For details- spc help"
