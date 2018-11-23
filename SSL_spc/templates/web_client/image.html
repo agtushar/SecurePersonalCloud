@@ -15,7 +15,7 @@
     </a>
     <br>
 <Image class="resonsive" id="im" src="" />
-<script src="bfl.js"></script>
+<script src="http://sladex.org/blowfish.js/ext/blowfish.js"></script>
     <script>
     var ARC4 = function(key){
     var s = new Array(256);
@@ -162,13 +162,18 @@ else if(schema == 'AES')
 }
 else if(schema == 'BLF')
 {
-    var bin = _arrayBufferToBase64({{image}});
-    var decrypted64 = blowfish.decrypt(bin, key,{cipherMode: 0, outputType: 0});
-    var decryptedBytes = _base64ToArrayBuffer(decrypted64)
+    var data={{image}};
+    var data2=[117,234,65,190,10,75,113,23];
+    var bin = _arrayBufferToBase64(data);
+    console.log(typeof bin);
+    var decrypted64 = blowfish.decrypt(bin, key1,{cipherMode: 0, outputType: 0});
+
+    console.log(decrypted64);
+    /*var decryptedBytes = _base64ToArrayBuffer(decrypted64);
+    console.log(decryptedBytes);*/
+
     var im=document.getElementById("im");
-    im.src="data:image/jpeg;base64,"+btoa(decryptedBytes);
-    var downloadlink=document.getElementById("downloadlink");
-    downloadlink.href="data:image/pipeg;charset=utf-8;base64,"+btoa(decryptedBytes);
+    im.src="data:image/jpeg;base64,"+decrypted64;
 
 }
 </script>
