@@ -16,6 +16,7 @@
         <!--<button type="button" class="btn btn-primary">Download</button>-->
     <!--</a>-->
 <video id="player" src="" controls></video>
+<script src="bfl.js"></script>
     <script>
     var ARC4 = function(key){
     var s = new Array(256);
@@ -115,6 +116,24 @@ function getCookie(cname) {
     }
     return "";
 }
+function _arrayBufferToBase64( buffer ) {
+    var binary = '';
+    var bytes = new Uint8Array( buffer );
+    var len = bytes.byteLength;
+    for (var i = 0; i < len; i++) {
+        binary += String.fromCharCode( bytes[ i ] );
+    }
+    return window.btoa( binary );
+}
+function _base64ToArrayBuffer(base64) {
+    var binary_string =  window.atob(base64);
+    var len = binary_string.length;
+    var bytes = new Uint8Array( len );
+    for (var i = 0; i < len; i++)        {
+        bytes[i] = binary_string.charCodeAt(i);
+    }
+    return bytes.buffer;
+}
 var key1=getCookie("key1");
 var key2=getCookie("key2");
 var schema=getCookie("schema");
@@ -135,6 +154,17 @@ else if(schema == 'AES')
     var aesCbc = new aesjs.ModeOfOperation.cbc(key1, key2);
     var decryptedUintarray = aesCbc.decrypt({{video}});
     var decryptedBytes=Array.from(decryptedUintarray);
+    var player=document.getElementById("player");
+    player.src="data:video/mp4;base64,"+btoa(decryptedBytes);
+    document.body.appendChild(player);
+    var downloadlink=document.getElementById("downloadlink");
+    downloadlink.href="data:video/web,;charset=utf-8;base64,"+btoa(decrypted);
+}
+else if(schema=='BLF')
+{
+    var bin = _arrayBufferToBase64({{video}});
+    var decrypted64 = blowfish.decrypt(bin, key,{cipherMode: 0, outputType: 0});
+    var decryptedBytes = _base64ToArrayBuffer(decrypted64)
     var player=document.getElementById("player");
     player.src="data:video/mp4;base64,"+btoa(decryptedBytes);
     document.body.appendChild(player);
